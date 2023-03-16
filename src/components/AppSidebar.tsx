@@ -1,6 +1,6 @@
 import React from 'react';
-import { Header,Icon, Image, Menu, Segment, Sidebar } from 'semantic-ui-react'
-import reactLogo from '../assets/react.svg'
+import { Button, Header,Icon, Menu, Segment, Sidebar } from 'semantic-ui-react'
+import TableSummaries from './TableSummaries';
 import TopBar from './TopBar'
 
 const AppSidebar: React.FC = () => {
@@ -28,9 +28,10 @@ const AppSidebar: React.FC = () => {
   
         <Sidebar.Pusher>
           <Segment basic>
-          <TopBar />  
-            <Header as='h3'>Dashboard Summary</Header>
-            <Image src={reactLogo} />
+          <TopBar />
+            <Button size='big' style={{ alignSelf: 'flex-end' }} ><Icon name='add' />Add New Cheque</Button>
+            <Header as='h3' style={{alignSelf: 'flex-start'}}>Dashboard Summary</Header>
+            <TableSummaries />
           </Segment>
         </Sidebar.Pusher>
       </Sidebar.Pushable>
