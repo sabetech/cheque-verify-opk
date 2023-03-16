@@ -1,4 +1,4 @@
-# Cheques Management 
+# Cheque Management 
 ![](https://img.shields.io/badge/Sabetech-developer-brightgreen)
 
 > This project is to enable a client to verify payments that are being made by cheques in his institution and when the cheques are due etc.
