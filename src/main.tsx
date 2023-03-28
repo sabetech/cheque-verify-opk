@@ -6,16 +6,27 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import 'semantic-ui-css/semantic.min.css'
-import { AuthProvider } from 'react-auth-kit';
-import { RequireAuth } from 'react-auth-kit';
+import { AuthProvider, useIsAuthenticated } from 'react-auth-kit';
 import LoginForm from './pages/Login';
+import { Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+
+const queryClient = new QueryClient()
+
+type PrivateRouteProps = {
+  Component: React.FC;
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ Component }) => {
+  const isAuthenticated = useIsAuthenticated();
+  const auth = isAuthenticated();
+  return auth ? <Component /> : <Navigate to="/login" />;
+};
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RequireAuth loginPath="/login"> 
-              <Root /> 
-            </RequireAuth>,
+    element: <PrivateRoute Component={Root} />,
   },
   {
     path: "/login",
@@ -25,13 +36,15 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <AuthProvider
-      authType={"cookie"}
-      authName={"_auth"}
-      cookieDomain={window.location.hostname}
-      cookieSecure={false}
-      >
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={false}
+        >
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 )

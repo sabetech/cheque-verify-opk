@@ -40,8 +40,10 @@ const LoginForm = (props: any) => {
           authState: {email: values.email}
          }
         )
-        
-        if (success) navigate('/');
+        console.log("Success:::", success);
+        if (success) {
+          navigate('/');
+        }
         
       }
     }catch ( err ) {
