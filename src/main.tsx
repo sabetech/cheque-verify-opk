@@ -9,7 +9,8 @@ import 'semantic-ui-css/semantic.min.css'
 import { AuthProvider, useIsAuthenticated } from 'react-auth-kit';
 import LoginForm from './pages/Login';
 import { Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 const queryClient = new QueryClient()
 
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         >
         <RouterProvider router={router} />
       </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>,
 )

@@ -1,10 +1,14 @@
-import { Button, Table } from 'semantic-ui-react';
+import { Button, Table, Image } from 'semantic-ui-react';
+import { useQuery } from 'react-query';
+import { getCheques } from '../services/ChequeApi';
+import { useAuthHeader } from 'react-auth-kit';
+
 
 const TableSummaries: React.FC = () => {
-    const headerRow = ["Date Created", "Cheque Number", "Amount (GHC)", "Status", "Date Due", "Saved By", "Actions"];
-    const tableData = [
-        {date_created: '2021-01-01', chequeNumber: '123456', amount: '1000', status: 'Pending',dueDate: '2023-03-22', savedBY: 'Samuel Banini'},
-    ];
+    const headerRow = ["Date Created", "Cheque Number", "Amount (GHC)", "Status", "Date Due", "Saved By", "Image", "Actions"];
+    const auth = useAuthHeader();
+
+    const { isLoading, isError, data, error } = useQuery('cheques', () => getCheques(auth()));
 
     return (
         <Table
@@ -22,14 +26,18 @@ const TableSummaries: React.FC = () => {
             </Table.Header>
             <Table.Body>
                 {
-                    tableData.map((data, i) => (
+                    data?.data?.map((row: any, i: number) => (
                         <Table.Row key={i}>
-                            <Table.Cell>{data.date_created}</Table.Cell>
-                            <Table.Cell>{data.chequeNumber}</Table.Cell>
-                            <Table.Cell>{data.amount}</Table.Cell>
-                            <Table.Cell>{data.status}</Table.Cell>
-                            <Table.Cell>{data.dueDate}</Table.Cell>
-                            <Table.Cell>{data.savedBY}</Table.Cell>
+                            <Table.Cell>{row.date_issued}</Table.Cell>
+                            <Table.Cell>{row.serial_no}</Table.Cell>
+                            <Table.Cell>{row.amount}</Table.Cell>
+                            <Table.Cell>{row.status}</Table.Cell>
+                            <Table.Cell>{row.date_due}</Table.Cell>
+                            <Table.Cell>{row.user.name}</Table.Cell>
+                            <Table.Cell><Image 
+                                src={`http://localhost:8000/storage/cheques/${row.img_url.substring(row.img_url.lastIndexOf("/"))}`} 
+                                width={'100px'}
+                                /></Table.Cell>
                             <Table.Cell>
                                 <Button color='blue'>Edit</Button>
                                 <Button color='red'>Delete</Button>

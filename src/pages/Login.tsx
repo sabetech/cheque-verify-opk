@@ -37,12 +37,22 @@ const LoginForm = (props: any) => {
           token: data.token,
           expiresIn: 3600,
           tokenType: "Bearer",
-          authState: {email: values.email}
+          authState: {user: 
+            {
+              email: values.email,
+              name: data.user.name,
+              role: null
+            }
+          }
          }
         )
         console.log("Success:::", success);
         if (success) {
+          console.log("DO YOU PASS HERE???");
           navigate('/');
+          // navigate to home page
+          // props.history.push('/');
+
         }
         
       }

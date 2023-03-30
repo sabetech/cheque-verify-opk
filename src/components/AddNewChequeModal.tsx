@@ -2,8 +2,9 @@ import React from 'react'
 import { Button, Header, Image, Modal } from 'semantic-ui-react'
 import chequeImage from '../assets/cheque-new.png'
 import AddNewChequeForm from './AddNewChequeForm';
-import { QueryClient, useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { addNewCheque } from '../services/ChequeApi';
+import { useAuthHeader } from 'react-auth-kit';
 interface AddNewChequeModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -13,7 +14,7 @@ interface Cheque {
   cheque_date: string,
   cheque_number: string,
   amount: number,
-  cheque_due_date: string,
+  cheque_date_due: string,
   image: File
 }
 
@@ -25,9 +26,10 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
     const [dateDue, setDateDue] = React.useState<Date | null>(null);
     const [image, setImage] = React.useState<File | null>(null);
     const queryClient = useQueryClient();
+    const auth = useAuthHeader();
 
     const { status, error, mutate} = useMutation({
-        mutationFn: addNewCheque,
+        mutationFn: (values: Cheque) => addNewCheque(values, auth()),
         onSuccess: newCheque => {
           queryClient.setQueryData('cheques', (oldCheques: any) => [...oldCheques, newCheque]);
           setOpen(false);
@@ -35,7 +37,6 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
     });
 
     const onSubmit = () => {
-        
         if (!dateIssued) {
             alert('Date issued is required');
             return;
@@ -60,10 +61,10 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
             cheque_date: dateIssued.toISOString() .split("T")[0],
             cheque_number: serialNumber,
             amount: parseFloat(amount),
-            cheque_due_date: dateDue.toISOString() .split("T")[0],
+            cheque_date_due: dateDue.toISOString() .split("T")[0],
             image: image,
-        }
-        console.log(values);
+        } as Cheque;
+        
         mutate(values);
 
     }
