@@ -10,12 +10,14 @@ const TopBar: React.FC = () => {
   const user = useAuthUser();
   const authHeader = useAuthHeader();
   const [name, setName] = React.useState<string>('');
+  const [role, setRole] = React.useState<string>('');
 
   console.log();
   useEffect(() => {
     const userInfo = user();
     if (userInfo) {
       setName(userInfo.user.name);
+      setRole(userInfo.user.role);
     }
   }, []);
 
@@ -28,7 +30,7 @@ const TopBar: React.FC = () => {
   return (
   <Menu style={{width: '90%', display: 'flex', justifyContent: 'flex-end'}} >
     <Menu.Item>
-        <Header as='h5'>{ name } (Admin)</Header>
+        <Header as='h5'>{ name } ({ role })</Header>
     </Menu.Item>
     <Menu.Item>
       <Button color='red' onClick={ logout }>Logout</Button>

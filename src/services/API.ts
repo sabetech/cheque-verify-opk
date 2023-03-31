@@ -31,4 +31,26 @@ const get = (url: string, headers: object) => {
     });
 }
 
-export { post, get };
+const deleteRequest = (url: string, headers: object) => {
+    return axios(BASE_URL+url, {
+        method: 'DELETE',
+        headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+        },
+    });
+}
+
+const put = (url: string, data: any, headers: object) => {
+    return axios(BASE_URL+url, {
+        method: 'PUT',
+        headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+        },
+        data: data
+    });
+}
+
+
+export { post, get, deleteRequest, put };

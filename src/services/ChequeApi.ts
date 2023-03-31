@@ -15,6 +15,14 @@ export function getCheques(token: string) : Promise<any> {
   return api.get('/cheques', {'Authorization': token}).then(response => response.data);
 }
 
+export function deleteCheque(chequeId: number, token: string) : Promise<any> {
+  return api.deleteRequest('/cheques/'+chequeId, {'Authorization': token});
+}
+
+export function editCheque(chequeId: Number, cheque: Cheque, token: string) : Promise<any> {
+  return api.put('/cheques/'+chequeId, cheque, {'Authorization': token});
+}
+
 export function logout(token: string) {
   return api.post('/logout', {}, {'Authorization': token});
 }

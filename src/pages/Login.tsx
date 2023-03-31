@@ -41,14 +41,14 @@ const LoginForm = (props: any) => {
             {
               email: values.email,
               name: data.user.name,
-              role: null
+              role: data.user.role
             }
           }
          }
         )
         console.log("Success:::", success);
         if (success) {
-          console.log("DO YOU PASS HERE???");
+         
           navigate('/');
           // navigate to home page
           // props.history.push('/');
