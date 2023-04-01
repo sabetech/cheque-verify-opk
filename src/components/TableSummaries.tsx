@@ -22,10 +22,12 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const { isLoading, isError, data, error } = useQuery(['cheques'], () => getCheques(auth()));
 
     React.useEffect(() => {
+        console.log("who are you:::",data);
         if (data) {
-            const newData = data.data.sort((a:any, b:any) => 
-            new Date(a.date_due).getTime() - new Date(b.date_due).getTime()).
-            map((d: any) => {
+            const newData = data.data
+            ?.sort((a:any, b:any) => 
+            new Date(a.date_due).getTime() - new Date(b.date_due).getTime())
+            ?.map((d: any) => {
                 const date_due = new Date(d.date_due);
                 const date_issued = new Date(d.date_issued);
                 const dateDueString = date_due.toLocaleDateString();
@@ -51,7 +53,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             });
             setTableData(newData);
         }
-    }, [data]);
+    }, [data, dateFilter]);
 
     const onDelete = (id: number) => {
         setOpenDeleteModal(true);

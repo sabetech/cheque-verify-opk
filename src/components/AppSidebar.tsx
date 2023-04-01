@@ -21,6 +21,11 @@ const AppSidebar: React.FC = (props: any) => {
     }
 
     const onDateRangeChange = (event: any, data: any) => {
+      if (!data.value) {
+        setDateFilter([]);
+        return;
+      }
+
       if (data.value.length == 2) {
         setDateFilter(data.value);
       }
