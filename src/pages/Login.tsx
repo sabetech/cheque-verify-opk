@@ -4,7 +4,7 @@ import { Button, Form, Message, Icon, Grid, Header, Input, Segment } from 'seman
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = (props: any) => {
-
+  const BASE_URL = import.meta.env.VITE_API_URL;
   const [error, setError] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -19,7 +19,7 @@ const LoginForm = (props: any) => {
     }
     
     try {
-      const response = await fetch("http://localhost:8000/api/login", {
+      const response = await fetch(`${BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

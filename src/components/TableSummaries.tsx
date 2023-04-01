@@ -22,9 +22,17 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const { isLoading, isError, data, error } = useQuery(['cheques'], () => getCheques(auth()));
 
     React.useEffect(() => {
-        console.log("who are you:::",data);
+        
+        console.log("WHO ARE YOU:::", data)
+
         if (data) {
-            const newData = data.data
+            const newData = data.data.filter((item: any) => {
+                if (dateFilter == null) return true;
+                if (dateFilter.length === 0) return true;
+                
+                return new Date(item.date_due).getTime() >= dateFilter[0].getTime() && 
+                    new Date(item.date_due).getTime() <= dateFilter[1].getTime();
+            })
             ?.sort((a:any, b:any) => 
             new Date(a.date_due).getTime() - new Date(b.date_due).getTime())
             ?.map((d: any) => {
