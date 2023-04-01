@@ -34,6 +34,7 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
           queryClient.invalidateQueries('cheques');
           queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? [...oldCheques.data, newCheque] : []);
           setOpen(false);
+          setImage(null);
         }
     });
 

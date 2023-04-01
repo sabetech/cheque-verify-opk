@@ -6,16 +6,52 @@ import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import { Icon } from 'semantic-ui-react'
 
+interface TableSummariesProps {
+    dateFilter: Date[];
+}
 
-const TableSummaries: React.FC = () => {
+const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false)
     const [chequeId, setChequeId] = React.useState<number>(0);
     const headerRow = ["Date Created", "Cheque Number", "Amount (GHC)", "Status", "Date Due", "Saved By", "Image", "Actions"];
     const auth = useAuthHeader();
     const user = useAuthUser();
     const loggedInUser = user();
+    const [tableData, setTableData] = React.useState<any>([]);
 
     const { isLoading, isError, data, error } = useQuery(['cheques'], () => getCheques(auth()));
+
+    React.useEffect(() => {
+        if (data) {
+            const newData = data.data.sort((a:any, b:any) => 
+            new Date(a.date_due).getTime() - new Date(b.date_due).getTime()).
+            map((d: any) => {
+                const date_due = new Date(d.date_due);
+                const date_issued = new Date(d.date_issued);
+                const dateDueString = date_due.toLocaleDateString();
+                const dateCreatedString = date_issued.toLocaleDateString();
+                const savedBy = d.user.name;
+                const status = d.status;
+                const amount = d.amount;
+                const chequeNumber = d.serial_no;
+                const image = d.img_url;
+                const id = d.id;
+                return { 
+                    actualDateIssued: d.date_issued,
+                    actualDateDue: d.date_due,
+                    dateDueString,
+                    dateCreatedString,
+                    savedBy, 
+                    status, 
+                    amount, 
+                    chequeNumber, 
+                    img_url: image, 
+                    id 
+                }
+            });
+            setTableData(newData);
+        }
+    }, [data]);
 
     const onDelete = (id: number) => {
         setOpenDeleteModal(true);
@@ -23,7 +59,6 @@ const TableSummaries: React.FC = () => {
     }
 
     const checkDate = (date: string) : boolean => {
-        //check if the difference between today's date the date passed in is less than 7 days
         const today = new Date();
         const dateDue = new Date(date);
         const diffTime = Math.abs(dateDue.getTime() - today.getTime());
@@ -47,20 +82,20 @@ const TableSummaries: React.FC = () => {
             </Table.Header>
             <Table.Body>
                 {
-                    data?.data?.map((row: any, i: number) => (
-                        <Table.Row key={i} warning={checkDate(row.date_due)} >
-                            <Table.Cell>{row.date_issued}</Table.Cell>
-                            <Table.Cell>{row.serial_no}</Table.Cell>
+                    tableData.map((row: any, i: number) => (
+                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} >
+                            <Table.Cell>{row.dateCreatedString}</Table.Cell>
+                            <Table.Cell>{row.chequeNumber}</Table.Cell>
                             <Table.Cell>{row.amount}</Table.Cell>
                             <Table.Cell>
-                                {(checkDate(row.date_due) && 
+                                {(checkDate(row.actualDateDue) && 
                                     <>
                                         <Icon name='attention' />   
                                     </>)}
                                 {row.status}
                             </Table.Cell>
-                            <Table.Cell>{row.date_due}</Table.Cell>
-                            <Table.Cell>{row.user.name}</Table.Cell>
+                            <Table.Cell>{row.dateDueString}</Table.Cell>
+                            <Table.Cell>{row.savedBy}</Table.Cell>
                             <Table.Cell>
                                 <Image 
                                 src={`http://localhost:8000/storage/cheques/${row.img_url.substring(row.img_url.lastIndexOf("/"))}`} 

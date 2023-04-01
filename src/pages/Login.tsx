@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useSignIn } from 'react-auth-kit';
-import { Button, Form, FormComponent, FormInputProps, Grid, Header, Input, Message, Segment } from 'semantic-ui-react'
+import { Button, Form, Message, Icon, Grid, Header, Input, Segment } from 'semantic-ui-react'
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = (props: any) => {
@@ -28,7 +28,6 @@ const LoginForm = (props: any) => {
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (data.error) {
         setError(data.error);
@@ -48,11 +47,7 @@ const LoginForm = (props: any) => {
         )
         console.log("Success:::", success);
         if (success) {
-         
-          navigate('/');
-          // navigate to home page
-          // props.history.push('/');
-
+          window.location.replace('/');
         }
         
       }
@@ -83,6 +78,12 @@ const LoginForm = (props: any) => {
             <Button color='teal' fluid size='large' onClick={onSubmit}>
               Login
             </Button>
+            {
+              error && <Message attached='bottom' negative>
+                        <Icon name='help' />
+                      { error }
+                      </Message>
+                }
           </Segment>
         </Form>
         <Message>
