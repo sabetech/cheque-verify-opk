@@ -31,7 +31,7 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
     const { status, error, mutate} = useMutation({
         mutationFn: (values: Cheque) => addNewCheque(values, auth()),
         onSuccess: newCheque => {
-          //queryClient.invalidateQueries('cheques');
+          queryClient.invalidateQueries('cheques');
           queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? [...oldCheques.data, newCheque] : []);
           setOpen(false);
           setImage(null);
