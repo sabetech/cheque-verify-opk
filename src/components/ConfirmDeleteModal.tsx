@@ -18,7 +18,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({open, setOpen, c
         mutationFn: (id: number) => deleteCheque(id, auth()),
         onSuccess: () => {
           queryClient.invalidateQueries('cheques');
-          queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? oldCheques.data.filter((c: any) => c.id !== chequeId) : []);
+          queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? oldCheques?.data?.filter((c: any) => c.id !== chequeId) : []);
           setOpen(false);
         }
     });

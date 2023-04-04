@@ -12,7 +12,7 @@ export function addNewCheque(cheque: Cheque, token: string) : Promise<any> {
 }
 
 export function getCheques(token: string) : Promise<any> {
-  return api.get('/cheques', {'Authorization': token}).then(response => response.data);
+  return api.get('/cheques', {'Authorization': token}).then(response => response.data.data);
 }
 
 export function deleteCheque(chequeId: number, token: string) : Promise<any> {

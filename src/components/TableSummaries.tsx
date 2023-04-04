@@ -26,7 +26,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
         console.log("WHO ARE YOU:::", data)
 
         if (data) {
-            const newData = data.data.filter((item: any) => {
+            const newData = data.filter((item: any) => {
                 if (dateFilter == null) return true;
                 if (dateFilter.length === 0) return true;
                 
@@ -40,7 +40,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                 const date_issued = new Date(d.date_issued);
                 const dateDueString = date_due.toLocaleDateString();
                 const dateCreatedString = date_issued.toLocaleDateString();
-                const savedBy = d.user.name;
+                const savedBy = d?.user?.name;
                 const status = d.status;
                 const amount = d.amount;
                 const chequeNumber = d.serial_no;
@@ -108,7 +108,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                             <Table.Cell>{row.savedBy}</Table.Cell>
                             <Table.Cell>
                                 <Image 
-                                src={`http://localhost:8000/storage/cheques/${row.img_url.substring(row.img_url.lastIndexOf("/"))}`} 
+                                src={`http://localhost:8000/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/"))}`} 
                                 width={'100px'}
                                 /></Table.Cell>
                             <Table.Cell> 
