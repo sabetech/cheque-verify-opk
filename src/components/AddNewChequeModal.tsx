@@ -61,10 +61,10 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
         }
 
         const values = {
-            cheque_date: dateIssued.toISOString() .split("T")[0],
+            cheque_date: dateIssued.toISOString().split("T")[0],
             cheque_number: serialNumber,
             amount: parseFloat(amount),
-            cheque_date_due: dateDue.toISOString() .split("T")[0],
+            cheque_date_due: dateDue.toISOString().split("T")[0],
             image: image,
         } as Cheque;
         

@@ -19,6 +19,10 @@ export function deleteCheque(chequeId: number, token: string) : Promise<any> {
   return api.deleteRequest('/cheques/'+chequeId, {'Authorization': token});
 }
 
+export function getChequeById(chequeId: number, token: string) : Promise<any> {
+  return api.get('/cheques/'+chequeId, {'Authorization': token}).then(response => response.data.data);
+}
+
 export function editCheque(chequeId: Number, cheque: Cheque, token: string) : Promise<any> {
   return api.put('/cheques/'+chequeId, cheque, {'Authorization': token});
 }
