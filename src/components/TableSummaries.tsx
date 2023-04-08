@@ -5,6 +5,7 @@ import { getCheques } from '../services/ChequeApi';
 import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import { Icon } from 'semantic-ui-react'
+import EditChequeModal from './EditChequeModal';
 
 interface TableSummariesProps {
     dateFilter: Date[];
@@ -12,6 +13,7 @@ interface TableSummariesProps {
 
 const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false)
+    const [openEditModal, setOpenEditModal] = React.useState(false)
     const [chequeId, setChequeId] = React.useState<number>(0);
     const headerRow = ["Date Created", "Cheque Number", "Amount (GHC)", "Status", "Date Due", "Saved By", "Image", "Actions"];
     const auth = useAuthHeader();
@@ -22,11 +24,9 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const { isLoading, isError, data, error } = useQuery(['cheques'], () => getCheques(auth()));
 
     React.useEffect(() => {
-        
-        console.log("WHO ARE YOU:::", data)
 
         if (data) {
-            const newData = data.data.filter((item: any) => {
+            const newData = data.filter((item: any) => {
                 if (dateFilter == null) return true;
                 if (dateFilter.length === 0) return true;
                 
@@ -40,7 +40,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                 const date_issued = new Date(d.date_issued);
                 const dateDueString = date_due.toLocaleDateString();
                 const dateCreatedString = date_issued.toLocaleDateString();
-                const savedBy = d.user.name;
+                const savedBy = d?.user?.name;
                 const status = d.status;
                 const amount = d.amount;
                 const chequeNumber = d.serial_no;
@@ -65,6 +65,11 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
 
     const onDelete = (id: number) => {
         setOpenDeleteModal(true);
+        setChequeId(id);
+    }
+
+    const onEdit = (id: number) => {
+        setOpenEditModal(true);
         setChequeId(id);
     }
 
@@ -108,14 +113,14 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                             <Table.Cell>{row.savedBy}</Table.Cell>
                             <Table.Cell>
                                 <Image 
-                                src={`http://localhost:8000/storage/cheques/${row.img_url.substring(row.img_url.lastIndexOf("/"))}`} 
+                                src={`http://localhost:8000/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/"))}`} 
                                 width={'100px'}
                                 /></Table.Cell>
                             <Table.Cell> 
                                 {
                                     (loggedInUser?.user.role == 'admin') && ( 
                                     <>
-                                        <Button color='blue' >Edit</Button>
+                                        <Button color='blue' onClick={() => onEdit(row.id)} >Edit</Button>
                                         <Button color='red' onClick={() => onDelete(row.id)} >Delete</Button>
                                     </>)
                                 }
@@ -124,7 +129,8 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                     ))
                 }
             </Table.Body>
-            <ConfirmDeleteModal open={openDeleteModal} setOpen={setOpenDeleteModal} chequeId={chequeId}/>
+            <ConfirmDeleteModal open={openDeleteModal} setOpen={setOpenDeleteModal} chequeId={chequeId} />
+            <EditChequeModal open={openEditModal} setOpen={setOpenEditModal} chequeId={chequeId} />
         </Table>
     );
 }

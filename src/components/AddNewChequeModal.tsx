@@ -28,11 +28,12 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
     const queryClient = useQueryClient();
     const auth = useAuthHeader();
 
-    const { status, error, mutate} = useMutation({
+    const { mutate } = useMutation({
+      
         mutationFn: (values: Cheque) => addNewCheque(values, auth()),
         onSuccess: newCheque => {
           queryClient.invalidateQueries('cheques');
-          queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? [...oldCheques.data, newCheque] : []);
+          queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? [...oldCheques, newCheque] : []);
           setOpen(false);
           setImage(null);
         }
@@ -60,10 +61,10 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
         }
 
         const values = {
-            cheque_date: dateIssued.toISOString() .split("T")[0],
+            cheque_date: dateIssued.toISOString().split("T")[0],
             cheque_number: serialNumber,
             amount: parseFloat(amount),
-            cheque_date_due: dateDue.toISOString() .split("T")[0],
+            cheque_date_due: dateDue.toISOString().split("T")[0],
             image: image,
         } as Cheque;
         
