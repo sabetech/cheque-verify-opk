@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSignIn } from 'react-auth-kit';
 import { Button, Form, Message, Icon, Grid, Header, Input, Segment } from 'semantic-ui-react'
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const LoginForm = (props: any) => {
   const BASE_URL = import.meta.env.VITE_API_URL;
@@ -18,18 +18,18 @@ const LoginForm = (props: any) => {
     }
     
     try {
-      const response = await fetch(`${BASE_URL}/login`, {
+      const response = await axios(`${BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        data: JSON.stringify(values),
       });
-
-      const data = await response.json();
-
-      if (data.error) {
-        setError(data.error);
+      
+      const data = await response.data;
+      console.log("Data:::", data);
+      if (response.status !== 201) {
+        setError("A login error occured. Please try again");
       } else {
         const success = signIn({
           token: data.token,
