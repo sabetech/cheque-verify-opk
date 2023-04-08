@@ -113,7 +113,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                             <Table.Cell>{row.savedBy}</Table.Cell>
                             <Table.Cell>
                                 <Image 
-                                src={`http://localhost:8000/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/"))}`} 
+                                src={`http://192.168.8.107:8000/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/"))}`} 
                                 width={'100px'}
                                 /></Table.Cell>
                             <Table.Cell> 
