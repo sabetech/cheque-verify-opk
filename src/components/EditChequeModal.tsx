@@ -9,6 +9,7 @@ import { editCheque } from '../services/ChequeApi';
 import { useAuthHeader } from 'react-auth-kit';
 import { SERVER_URL } from '../services/API';
 import chequeImage from '../assets/cheque-new.png'
+import axios from 'axios';
 
 interface AddNewChequeModalProps {
     open: boolean;
@@ -48,7 +49,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
           setImage(null);
         }
     });
-
+    
     useEffect(() => {
 
         if (data) {
@@ -57,19 +58,10 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
             setAmount(data.amount);
             setDateDue(new Date(data.date_due));
             setStatus(data.status);
-            getFileFromImage(`${SERVER_URL}/storage/cheques/${data.img_url?.substring(data?.img_url.lastIndexOf("/"))}`)
+            setImage(new File([data.image], 'image.jpg', { type: 'image/jpeg' }))
         }
 
     },[data]);
-
-    const getFileFromImage = async (imgUrl: string) => {
-        await fetch(imgUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-                setImage(file)
-            });
-    }
 
     const onDateIssuedChanged = (event: React.SyntheticEvent<Element, Event> | undefined, data: SemanticDatepickerProps) => {
         setDateIssued(data.value as Date);
@@ -141,7 +133,6 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
             image: image,
         } as Cheque;
 
-        console.log(values);
         mutate(values);
 
     }
