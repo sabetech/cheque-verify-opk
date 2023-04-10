@@ -3,9 +3,11 @@ import { Button, Label, Input, Image, Modal, Form, Dropdown } from 'semantic-ui-
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 import { SemanticDatepickerProps } from 'react-semantic-ui-datepickers/dist/types';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { getChequeById } from '../services/ChequeApi';
+import { editCheque } from '../services/ChequeApi';
 import { useAuthHeader } from 'react-auth-kit';
+import { SERVER_URL } from '../services/API';
 import chequeImage from '../assets/cheque-new.png'
 
 interface AddNewChequeModalProps {
@@ -33,8 +35,19 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
     const [image, setImage] = React.useState<File | null>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const auth = useAuthHeader();
-
+    const queryClient = useQueryClient();
+    
     const { data } = useQuery<Cheque>({queryKey: ['cheques', chequeId], queryFn: () => getChequeById(chequeId, auth())})
+    const { mutate } = useMutation({
+      
+        mutationFn: (values: Cheque) => editCheque(chequeId, values, auth()),
+        onSuccess: newCheque => {
+          queryClient.invalidateQueries('cheques');
+          queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? [...oldCheques, newCheque] : []);
+          setOpen(false);
+          setImage(null);
+        }
+    });
 
     useEffect(() => {
 
@@ -44,9 +57,19 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
             setAmount(data.amount);
             setDateDue(new Date(data.date_due));
             setStatus(data.status);
+            getFileFromImage(`${SERVER_URL}/storage/cheques/${data.img_url?.substring(data?.img_url.lastIndexOf("/"))}`)
         }
 
     },[data]);
+
+    const getFileFromImage = async (imgUrl: string) => {
+        await fetch(imgUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+                setImage(file)
+            });
+    }
 
     const onDateIssuedChanged = (event: React.SyntheticEvent<Element, Event> | undefined, data: SemanticDatepickerProps) => {
         setDateIssued(data.value as Date);
@@ -57,7 +80,10 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
     }
 
     const onAmountChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAmount(parseFloat(event.target.value));
+        if (event.target.value === '' || event.target.value === '0')
+            setAmount(0);
+        else
+            setAmount(parseInt(event.target.value));
     }
 
     const onDateDueChanged = (event: React.SyntheticEvent<Element, Event> | undefined, data: SemanticDatepickerProps) => {
@@ -116,6 +142,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
         } as Cheque;
 
         console.log(values);
+        mutate(values);
 
     }
 

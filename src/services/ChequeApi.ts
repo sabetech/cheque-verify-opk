@@ -1,10 +1,12 @@
 import * as api from './API';
 interface Cheque {
-  cheque_date: string,
-  cheque_number: string,
+  date_issued: string,
+  serial_no: string,
   amount: number,
-  cheque_date_due: string,
+  date_due: string,
   image: File | null,
+  img_url?: string,
+  status?: string,
 }
 
 export function addNewCheque(cheque: Cheque, token: string) : Promise<any> {

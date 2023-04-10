@@ -3,6 +3,7 @@ import axios from "axios";
 //create base url from environment variable base url
 
 const BASE_URL = import.meta.env.VITE_API_URL;
+const SERVER_URL = import.meta.env.VITE_SERVER_URL
 
 const post = (url: string, data: any, headers: object) => {
  const formData = new FormData();
@@ -53,4 +54,4 @@ const put = (url: string, data: any, headers: object) => {
 }
 
 
-export { post, get, deleteRequest, put };
+export { post, get, deleteRequest, put, SERVER_URL };
