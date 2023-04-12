@@ -22,7 +22,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const loggedInUser = user();
     const [tableData, setTableData] = React.useState<any>([]);
 
-    const { isLoading, isError, data, error } = useQuery(['cheques'], () => getCheques(auth()));
+    const { data } = useQuery(['cheques'], () => getCheques(auth()));
 
     React.useEffect(() => {
 

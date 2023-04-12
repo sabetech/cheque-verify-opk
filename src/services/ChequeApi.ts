@@ -33,4 +33,8 @@ export function logout(token: string) {
   return api.post('/logout', {}, {'Authorization': token});
 }
 
+export function getUsers(token: string) : Promise<any> {
+  return api.get('/users', {'Authorization': token}).then(response => response.data.data);
+}
+
 

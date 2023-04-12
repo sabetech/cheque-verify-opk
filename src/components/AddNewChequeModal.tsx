@@ -77,7 +77,6 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={<Button>Show Modal</Button>}
     >
       <Modal.Header>Add New Cheque</Modal.Header>
       <Modal.Content image>
