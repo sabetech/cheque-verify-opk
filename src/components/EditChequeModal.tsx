@@ -7,9 +7,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { getChequeById } from '../services/ChequeApi';
 import { editCheque } from '../services/ChequeApi';
 import { useAuthHeader } from 'react-auth-kit';
-import { SERVER_URL } from '../services/API';
 import chequeImage from '../assets/cheque-new.png'
-import axios from 'axios';
 
 interface AddNewChequeModalProps {
     open: boolean;

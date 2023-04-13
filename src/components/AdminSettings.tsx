@@ -1,16 +1,92 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Segment, Grid, Button, Divider, Header, Modal, Form, Radio, CheckboxProps  } from "semantic-ui-react";
 import UserList from "./UserList";
+import { useQuery, useMutation, QueryClient } from "react-query";
+import { editUser, getUsers } from "../services/UserApi";
+import { useAuthHeader } from "react-auth-kit";
+
+interface Role {
+    id: number;
+    name: string;
+  }
+interface User {
+    id?: number;
+    name: string;
+    email: string;
+    roles: Array<Role>;
+    role: string;
+}
 
 const AdminSettings: React.FC = () => {
+    
+    const [users, setUsers] = React.useState<User[]>([]);
     const [open, setOpen] = React.useState<boolean>(false);
-    const [role, setRole] = React.useState<string>('');
-    const showAddNewUserModal = () => {
-        setOpen((prev) => !prev);
+    const [userId, setUserId] = React.useState<number>(0);
+    const [selectedUser, setSelectedUser] = React.useState<User | undefined>(undefined); //selected user
+    const [role, setRole] = React.useState<string>(''); //admin or clerk
+    const [name, setName] = React.useState<string>(''); //user name
+    const [password, setPassword] = React.useState<string>('');
+    
+    const auth = useAuthHeader(); //get the auth header
+    const queryClient = new QueryClient(); //create a new query client
+
+    //use react query to fetch users from the database
+    const { data } = useQuery(['users'], () => getUsers(auth()));
+    const { mutate } = useMutation({
+      
+        mutationFn: (values: any) => editUser(userId, values, auth()),
+        onSuccess: newUser => {
+          queryClient.invalidateQueries('users');
+          queryClient.setQueryData(['users'], (oldUsers: any) => oldUsers ? [...oldUsers, newUser] : []);
+          setOpen(false);
+        }
+    });
+    useEffect(() => {
+        setUsers(data);
+    }, [data]);
+    
+    useEffect(() => {
+        
+        if(userId > 0){
+            setSelectedUser(users.find((user: User) => user.id === userId));
+        }
+
+    },[ userId ]);
+
+    useEffect(() => {
+        if(selectedUser){
+            setName(selectedUser.name);
+            setRole(selectedUser.roles.length > 0 ? selectedUser.roles[0].name : '');
+        }
+    }, [selectedUser]);
+
+    const showAddNewUserModal = (open: boolean) => {
+        setOpen(open);
     }
 
     const handleSelectRole = ( e: React.FormEvent<HTMLInputElement>, { value }: CheckboxProps) => {
         setRole(value as string);
+    }
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setName(e.target.value);
+    }
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+    }
+
+    const handleSave = () => {
+        
+        const values = {
+            name: name,
+            email: selectedUser?.email,
+            password: password,
+            role: role
+        }
+
+        mutate(values);
+
     }
 
     return (
@@ -20,12 +96,12 @@ const AdminSettings: React.FC = () => {
         <Grid columns={2} relaxed='very' stackable>
             <Grid.Column>
                 
-                <UserList showAddNewUserModal={showAddNewUserModal} />
+                <UserList showAddNewUserModal={showAddNewUserModal} users={users} setUserId={setUserId} />
                 
             </Grid.Column>
 
             <Grid.Column verticalAlign='middle'>
-                <Button content='Add New User' icon='signup' size='big' onClick={showAddNewUserModal} />
+                <Button content='Add New User' icon='signup' size='big' onClick={() => showAddNewUserModal(true)} />
             </Grid.Column>
         </Grid>
 
@@ -40,30 +116,30 @@ const AdminSettings: React.FC = () => {
         <Form>
             <Form.Field>
                 <label>Name</label>
-                <input placeholder='First Name' />
+                <input placeholder='Name' value={ name } onChange={handleNameChange}/>
             </Form.Field>
             <Form.Field>
                 <label>Email</label>
-                <input placeholder='email@mail.com' type="email" readOnly/>
+                <input placeholder='email@mail.com' type="email" value={ selectedUser?.email } readOnly/>
             </Form.Field>
             <Form.Field>
-                <label>Password</label>
-                <input placeholder='Password' type="password" />
+                <label>Password <em>(Leave blank to maintain old password)</em></label>
+                <input placeholder='Type in a new password' type="password" value={password} onChange={handlePasswordChange}/>
             </Form.Field>
             <Form.Field>
                 <label>Role: {role}</label>
                 <Radio label='Admin' name='role' value='admin' checked={role === 'admin'} onChange={handleSelectRole} />
                 <Radio label='Clerk' name='role' value='clerk' checked={role === 'clerk'} onChange={handleSelectRole} />
             </Form.Field>
-            <Button type='submit'>Submit</Button>
+            <Button type='submit' onClick={handleSave}>Submit</Button>
         </Form>
             
         </Modal.Content>
         <Modal.Actions>
-          <Button negative onClick={showAddNewUserModal}>
+          <Button negative onClick={() => showAddNewUserModal(false)}>
             No
           </Button>
-          <Button positive onClick={showAddNewUserModal}>
+          <Button positive onClick={() => showAddNewUserModal(false)}>
             Yes
           </Button>
         </Modal.Actions>

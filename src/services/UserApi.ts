@@ -1,9 +1,9 @@
 import * as api from './API';
 interface User {
   name: string,
-  email: string,
-  password: string,
-  role: string,
+  email: string | undefined,
+  password: string | undefined,
+  role?: string,
 }
 
 export function addNewUser(user: User, token: string) : Promise<any> {
