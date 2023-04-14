@@ -11,6 +11,8 @@ import LoginForm from './pages/Login';
 import { Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools'
+import Dashboard from './pages/Dashboard';
+import AdminSettings from './components/AdminSettings';
 
 const queryClient = new QueryClient()
 
@@ -21,13 +23,17 @@ type PrivateRouteProps = {
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ Component }) => {
   const isAuthenticated = useIsAuthenticated();
   const auth = isAuthenticated();
-  return auth ? <Component /> : <Navigate to="/login" />;
+  return auth ? <Root component={ Component } /> : <Navigate to="/login" />;
 };
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <PrivateRoute Component={Root} />,
+    element: <PrivateRoute Component={ Dashboard } />,
+  },
+  {
+    path: "/admin",
+    element: <PrivateRoute Component={ AdminSettings } />,
   },
   {
     path: "/login",

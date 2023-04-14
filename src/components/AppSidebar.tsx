@@ -1,34 +1,22 @@
 import React, { useState } from 'react';
 import { Button, Header,Icon, Menu, Segment, Sidebar, Grid } from 'semantic-ui-react'
 import AddNewChequeModal from './AddNewChequeModal';
-import TableSummaries from './TableSummaries';
 import TopBar from './TopBar'
-import { useQuery } from 'react-query';
-import { Loader } from 'semantic-ui-react';
 import { useAuthUser } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
-import SemanticDatepicker from "react-semantic-ui-datepickers";
 
-const AppSidebar: React.FC = (props: any) => {
+interface AppSidebarProps {
+  SubPage: React.FC;
+}
+
+const AppSidebar: React.FC<AppSidebarProps> = ({ SubPage }) => {
     const [open, setOpen] = useState<boolean>(false)
-    const { isLoading } = useQuery(['cheques'])
     const user = useAuthUser();
     const loggedInUser = user();
     const navigate = useNavigate();
-    const [dateFilter, setDateFilter] = useState<Date[]>([]);
-    const showAddNewChequeModal = () => {
-      setOpen((prev) => !prev);
-    }
 
-    const onDateRangeChange = (event: any, data: any) => {
-      if (!data.value) {
-        setDateFilter([]);
-        return;
-      }
-
-      if (data.value.length == 2) {
-        setDateFilter(data.value);
-      }
+    const onAdminSettingsClick = () => {
+      navigate('/admin');
     }
 
     return (
@@ -49,7 +37,7 @@ const AppSidebar: React.FC = (props: any) => {
           {
             loggedInUser?.user.role == 'admin' && 
             ( <>
-              <Menu.Item as='a' >
+              <Menu.Item as='a' onClick={onAdminSettingsClick}>
                 <Icon name='cog' />
                 Admin Settings
               </Menu.Item> 
@@ -65,12 +53,7 @@ const AppSidebar: React.FC = (props: any) => {
         <Sidebar.Pusher>
           <Segment basic>
           <TopBar />
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'baseline' }}>
-              <Button size='big' style={{ alignSelf: 'flex-end', marginLeft:20, marginRight: 20 }} onClick={(e) => showAddNewChequeModal()}><Icon name='add' />Add New Cheque</Button>
-              <SemanticDatepicker locale="en-US" onChange={onDateRangeChange} type="range" />  
-            </div>
-            <Header as='h3' style={{alignSelf: 'flex-start'}}>Dashboard Summary { isLoading && <Loader active inline /> } </Header>
-            <TableSummaries dateFilter={dateFilter}/>
+            <SubPage />
           </Segment>
         </Sidebar.Pusher>
       </Sidebar.Pushable>

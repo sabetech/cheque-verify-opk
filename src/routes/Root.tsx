@@ -1,9 +1,14 @@
+import React from "react";
 import AppSidebar from "../components/AppSidebar";
 
-export default function Root() {
+interface RootProps {
+    component: React.FC;
+}
+
+export default function Root ({ component } : RootProps) {
     
 
     return (
-        <AppSidebar />
+        <AppSidebar SubPage={ component } />
     )
 }

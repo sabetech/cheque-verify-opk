@@ -11,10 +11,10 @@ interface AddNewChequeModalProps {
 }
 
 interface Cheque {
-  cheque_date: string,
-  cheque_number: string,
+  date_issued: string,
+  serial_no: string,
   amount: number,
-  cheque_date_due: string,
+  date_due: string,
   image: File
 }
 
@@ -61,10 +61,10 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
         }
 
         const values = {
-            cheque_date: dateIssued.toISOString().split("T")[0],
-            cheque_number: serialNumber,
+            date_issued: dateIssued.toISOString().split("T")[0],
+            serial_no: serialNumber,
             amount: parseFloat(amount),
-            cheque_date_due: dateDue.toISOString().split("T")[0],
+            date_due: dateDue.toISOString().split("T")[0],
             image: image,
         } as Cheque;
         
@@ -77,7 +77,6 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={<Button>Show Modal</Button>}
     >
       <Modal.Header>Add New Cheque</Modal.Header>
       <Modal.Content image>

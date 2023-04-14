@@ -6,6 +6,7 @@ import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import { Icon } from 'semantic-ui-react'
 import EditChequeModal from './EditChequeModal';
+import { SERVER_URL } from '../services/API';
 
 interface TableSummariesProps {
     dateFilter: Date[];
@@ -21,7 +22,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const loggedInUser = user();
     const [tableData, setTableData] = React.useState<any>([]);
 
-    const { isLoading, isError, data, error } = useQuery(['cheques'], () => getCheques(auth()));
+    const { data } = useQuery(['cheques'], () => getCheques(auth()));
 
     React.useEffect(() => {
 
@@ -81,6 +82,12 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
         return diffDays < 3;
     }
 
+    const checkDateOverDue = (date: string) : boolean => {
+        const today = new Date();
+        const dateDue = new Date(date);
+        return dateDue.getTime() < today.getTime();
+    }
+
     return (
         <Table
             celled
@@ -98,12 +105,13 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             <Table.Body>
                 {
                     tableData.map((row: any, i: number) => (
-                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} >
+                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} negative={true}>
                             <Table.Cell>{row.dateCreatedString}</Table.Cell>
                             <Table.Cell>{row.chequeNumber}</Table.Cell>
                             <Table.Cell>{row.amount}</Table.Cell>
                             <Table.Cell>
-                                {(checkDate(row.actualDateDue) && 
+                                {
+                                (checkDate(row.actualDateDue) && 
                                     <>
                                         <Icon name='attention' />   
                                     </>)}
@@ -113,7 +121,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                             <Table.Cell>{row.savedBy}</Table.Cell>
                             <Table.Cell>
                                 <Image 
-                                src={`http://192.168.8.107:8000/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/"))}`} 
+                                src={`${SERVER_URL}/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/"))}`} 
                                 width={'100px'}
                                 /></Table.Cell>
                             <Table.Cell> 
@@ -130,7 +138,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                 }
             </Table.Body>
             <ConfirmDeleteModal open={openDeleteModal} setOpen={setOpenDeleteModal} chequeId={chequeId} />
-            <EditChequeModal open={openEditModal} setOpen={setOpenEditModal} chequeId={chequeId} />
+            {chequeId > 0 && <EditChequeModal open={openEditModal} setOpen={setOpenEditModal} chequeId={chequeId} />}
         </Table>
     );
 }
