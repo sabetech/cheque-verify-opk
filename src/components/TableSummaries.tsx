@@ -82,6 +82,12 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
         return diffDays < 3;
     }
 
+    const checkDateOverDue = (date: string) : boolean => {
+        const today = new Date();
+        const dateDue = new Date(date);
+        return dateDue.getTime() < today.getTime();
+    }
+
     return (
         <Table
             celled
@@ -99,12 +105,13 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             <Table.Body>
                 {
                     tableData.map((row: any, i: number) => (
-                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} >
+                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} negative={true}>
                             <Table.Cell>{row.dateCreatedString}</Table.Cell>
                             <Table.Cell>{row.chequeNumber}</Table.Cell>
                             <Table.Cell>{row.amount}</Table.Cell>
                             <Table.Cell>
-                                {(checkDate(row.actualDateDue) && 
+                                {
+                                (checkDate(row.actualDateDue) && 
                                     <>
                                         <Icon name='attention' />   
                                     </>)}

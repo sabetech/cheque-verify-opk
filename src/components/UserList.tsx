@@ -41,7 +41,7 @@ return (
         return (
           <List.Item key={user.id} >
             <List.Content floated='right'>
-              <Button color='red' onClick={() => onUserRemove(user.id)} size={"tiny"}>X</Button>
+              <Button basic color='red' onClick={() => onUserRemove(user.id)} size={"tiny"}>X</Button>
             </List.Content>
             <Image avatar src='https://www.shareicon.net/download/128x128//2017/02/15/878685_user_512x512.png' />
             <List.Content onClick={() => onEditUser(user.id)}><strong>{ user.name } </strong><em>({user.roles.length > 0 ? user.roles[0].name : "No Assigned Role"})</em></List.Content>

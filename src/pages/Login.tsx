@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSignIn } from 'react-auth-kit';
 import { Button, Form, Message, Icon, Grid, Header, Input, Segment } from 'semantic-ui-react'
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const LoginForm = (props: any) => {
   const BASE_URL = import.meta.env.VITE_API_URL;
@@ -50,8 +50,8 @@ const LoginForm = (props: any) => {
         }
         
       }
-    }catch ( err ) {
-      console.log("Error:::", err);
+    }catch ( err: any ) {
+      setError(err.response.data.error)
     }
   }
 

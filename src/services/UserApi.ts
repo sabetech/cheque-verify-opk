@@ -6,7 +6,7 @@ interface User {
   role?: string,
 }
 
-export function addNewUser(user: User, token: string) : Promise<any> {
+export function addNewUser(user: any, token: string) : Promise<any> {
   return api.post('/users', user, {'Authorization': token});
 }
 

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Segment, Grid, Button, Divider, Header, Modal, Form, Radio, CheckboxProps  } from "semantic-ui-react";
 import UserList from "./UserList";
 import { useQuery, useMutation, QueryClient } from "react-query";
-import { editUser, getUsers } from "../services/UserApi";
+import { addNewUser, editUser, getUsers } from "../services/UserApi";
 import { useAuthHeader } from "react-auth-kit";
 
 interface Role {
@@ -17,13 +17,14 @@ interface Role {
   }
 
 const AdminSettings: React.FC = () => {
-    
+    const [heading, setHeading] = React.useState<string>('Add New User');
     const [users, setUsers] = React.useState<User[]>([]);
     const [open, setOpen] = React.useState<boolean>(false);
     const [userId, setUserId] = React.useState<number>(0);
     const [selectedUser, setSelectedUser] = React.useState<User | undefined>(undefined); //selected user
     const [role, setRole] = React.useState<string>(''); //admin or clerk
     const [name, setName] = React.useState<string>(''); //user name
+    const [email, setEmail] = React.useState<string>(''); //user email
     const [password, setPassword] = React.useState<string>('');
     
     const auth = useAuthHeader(); //get the auth header
@@ -32,7 +33,12 @@ const AdminSettings: React.FC = () => {
     //use react query to fetch users from the database
     const { data } = useQuery(['users'], () => getUsers(auth()));
     const { mutate } = useMutation({
-        mutationFn: (values: any) => editUser(userId, values, auth()),
+        mutationFn: (values: any) => {
+            if (userId === 0) {
+                return addNewUser(values, auth())
+            }
+            return editUser(userId, values, auth())
+        },
         
         onSuccess: newUser => {
           queryClient.invalidateQueries('users');
@@ -56,8 +62,18 @@ const AdminSettings: React.FC = () => {
         if(selectedUser){
             setName(selectedUser.name);
             setRole(selectedUser.roles.length > 0 ? selectedUser.roles[0].name : '');
+            setEmail(selectedUser.email);
         }
     }, [selectedUser]);
+
+    const addNewUserClick = () => {
+        setUserId(0);
+        setName('');
+        setRole('');
+        setEmail('');
+        selectedUser && setSelectedUser(undefined);
+        showAddNewUserModal(true);
+    }
 
     const showAddNewUserModal = (open: boolean) => {
         setOpen(open);
@@ -79,7 +95,7 @@ const AdminSettings: React.FC = () => {
         
         const values = {
             name: name,
-            email: selectedUser?.email,
+            email: email,
             password: password,
             role: role
         }
@@ -95,12 +111,12 @@ const AdminSettings: React.FC = () => {
         <Grid columns={2} relaxed='very' stackable>
             <Grid.Column>
                 
-                <UserList showAddNewUserModal={showAddNewUserModal} users={users} setUserId={setUserId} />
+                <UserList showAddNewUserModal={showAddNewUserModal} users={users} setUserId={setUserId}/>
                 
             </Grid.Column>
 
             <Grid.Column verticalAlign='middle'>
-                <Button content='Add New User' icon='signup' size='big' onClick={() => showAddNewUserModal(true)} />
+                <Button content='Add New User' icon='signup' size='big' onClick={() => addNewUserClick()} />
             </Grid.Column>
         </Grid>
 
@@ -110,7 +126,7 @@ const AdminSettings: React.FC = () => {
         size={'small'}
         open={open}
       >
-        <Modal.Header>Users Modification</Modal.Header>
+        <Modal.Header>{ userId > 0? "Edit User":"Add New User" }</Modal.Header>
         <Modal.Content>
         <Form>
             <Form.Field>
@@ -119,11 +135,11 @@ const AdminSettings: React.FC = () => {
             </Form.Field>
             <Form.Field>
                 <label>Email</label>
-                <input placeholder='email@mail.com' type="email" value={ selectedUser?.email } readOnly/>
+                <input placeholder='email@mail.com' type="email" value={ email } readOnly={userId !== 0} onChange={(e) => setEmail(e.target.value)}/>
             </Form.Field>
             <Form.Field>
                 <label>Password <em>(Leave blank to maintain old password)</em></label>
-                <input placeholder='Type in a new password' type="password" value={password} onChange={handlePasswordChange}/>
+                <input placeholder='Type in a new password' type="password" defaultValue={""} value={password} onChange={handlePasswordChange}/>
             </Form.Field>
             <Form.Field>
                 <label>Role: {role}</label>
@@ -135,11 +151,8 @@ const AdminSettings: React.FC = () => {
             
         </Modal.Content>
         <Modal.Actions>
-          <Button negative onClick={() => showAddNewUserModal(false)}>
-            No
-          </Button>
-          <Button positive onClick={() => showAddNewUserModal(false)}>
-            Yes
+          <Button color={"black"} onClick={() => showAddNewUserModal(false)}>
+           Cancel
           </Button>
         </Modal.Actions>
       </Modal>
