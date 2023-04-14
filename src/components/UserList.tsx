@@ -23,8 +23,6 @@ interface User {
 
 const UserList: React.FC<UserListProps> = ({ showAddNewUserModal, users, setUserId }) => {
 
-  const queryClient = useQueryClient();
-
   const onUserRemove = (id: number) => {
    
 

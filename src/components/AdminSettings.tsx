@@ -9,13 +9,12 @@ interface Role {
     id: number;
     name: string;
   }
-interface User {
-    id?: number;
+  interface User {
+    id: number;
     name: string;
     email: string;
     roles: Array<Role>;
-    role: string;
-}
+  }
 
 const AdminSettings: React.FC = () => {
     
@@ -33,8 +32,8 @@ const AdminSettings: React.FC = () => {
     //use react query to fetch users from the database
     const { data } = useQuery(['users'], () => getUsers(auth()));
     const { mutate } = useMutation({
-      
         mutationFn: (values: any) => editUser(userId, values, auth()),
+        
         onSuccess: newUser => {
           queryClient.invalidateQueries('users');
           queryClient.setQueryData(['users'], (oldUsers: any) => oldUsers ? [...oldUsers, newUser] : []);

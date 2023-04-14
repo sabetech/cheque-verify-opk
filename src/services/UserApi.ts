@@ -18,7 +18,7 @@ export function deleteUser(userId: number, token: string) : Promise<any> {
   return api.deleteRequest('/users/'+userId, {'Authorization': token});
 }
 
-export function editUser(userId: Number, user: User, token: string) : Promise<any> {
+export function editUser(userId: Number, user: any, token: string) : Promise<any> {
   return api.put('/users/'+userId, user, {'Authorization': token});
 }
 
