@@ -12,6 +12,7 @@ const LoginForm = (props: any) => {
   const signIn = useSignIn();
 
   const onSubmit = async () => {
+    setError("");
     const values = {
       email: email,
       password: password

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Segment, Grid, Button, Divider, Header, Modal, Form, Radio, CheckboxProps  } from "semantic-ui-react";
+import { Segment, Grid, Button, Divider, Header, Modal, Form, Radio, CheckboxProps, Loader  } from "semantic-ui-react";
 import UserList from "./UserList";
 import { useQuery, useMutation, QueryClient } from "react-query";
 import { addNewUser, editUser, getUsers } from "../services/UserApi";
@@ -32,7 +32,7 @@ const AdminSettings: React.FC = () => {
 
     //use react query to fetch users from the database
     const { data } = useQuery(['users'], () => getUsers(auth()));
-    const { mutate } = useMutation({
+    const { isLoading, mutate } = useMutation({
         mutationFn: (values: any) => {
             if (userId === 0) {
                 return addNewUser(values, auth())
@@ -107,7 +107,7 @@ const AdminSettings: React.FC = () => {
     return (
         <>
     <Segment placeholder>
-        <Header as='h3' style={{alignSelf: 'flex-start'}}>Users </Header>
+        <Header as='h3' style={{alignSelf: 'flex-start'}}>Users { isLoading && <Loader active inline /> }</Header>
         <Grid columns={2} relaxed='very' stackable>
             <Grid.Column>
                 
@@ -138,8 +138,8 @@ const AdminSettings: React.FC = () => {
                 <input placeholder='email@mail.com' type="email" value={ email } readOnly={userId !== 0} onChange={(e) => setEmail(e.target.value)}/>
             </Form.Field>
             <Form.Field>
-                <label>Password <em>(Leave blank to maintain old password)</em></label>
-                <input placeholder='Type in a new password' type="password" defaultValue={""} value={password} onChange={handlePasswordChange}/>
+                <label>Password <em>{ userId > 0?"(Leave blank to maintain old password)":""}</em></label>
+                <input placeholder='Type in a new password' type="password" value={password} onChange={handlePasswordChange}/>
             </Form.Field>
             <Form.Field>
                 <label>Role: {role}</label>
