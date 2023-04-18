@@ -105,7 +105,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             <Table.Body>
                 {
                     tableData.map((row: any, i: number) => (
-                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} negative={true}>
+                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} negative={false}>
                             <Table.Cell>{row.dateCreatedString}</Table.Cell>
                             <Table.Cell>{row.chequeNumber}</Table.Cell>
                             <Table.Cell>{row.amount}</Table.Cell>
@@ -121,7 +121,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                             <Table.Cell>{row.savedBy}</Table.Cell>
                             <Table.Cell>
                                 <Image 
-                                src={`${SERVER_URL}/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/"))}`} 
+                                src={`${SERVER_URL}/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/") + 1)}`} 
                                 width={'100px'}
                                 /></Table.Cell>
                             <Table.Cell> 
