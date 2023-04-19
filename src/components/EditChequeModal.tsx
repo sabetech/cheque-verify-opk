@@ -17,6 +17,7 @@ interface AddNewChequeModalProps {
 
 interface Cheque {
     date_issued: string,
+    cheque_holder_name: string,
     serial_no: string,
     amount: number,
     date_due: string,
@@ -31,6 +32,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
     const [amount, setAmount] = React.useState<number>(0);
     const [dateDue, setDateDue] = React.useState<Date | null>(null);
     const [status, setStatus] = React.useState<string>('');
+    const [chequeHolder, setChequeHolder] = React.useState<string>('');
     const [image, setImage] = React.useState<File | null>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const auth = useAuthHeader();
@@ -52,6 +54,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
 
         if (data) {
             setDateIssued(new Date(data.date_issued));
+            setChequeHolder(data.cheque_holder_name);
             setSerialNumber(data.serial_no);
             setAmount(data.amount);
             setDateDue(new Date(data.date_due));
@@ -81,6 +84,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
     }
 
     const onStatusChanged = (event: React.SyntheticEvent<HTMLElement, Event>, data: any) => {
+        console.log(data.value)
         setStatus(data.value);
     }
 
@@ -88,6 +92,10 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
         if (event.target.files) {
             setImage(event.target.files[0]);
         }
+    }
+
+    const onChequeHolderChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChequeHolder(event.target.value);
     }
 
     const onSubmit = () => {
@@ -151,7 +159,11 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
                     <Form style={{marginTop: '5%'}}>
                         <Form.Field>
                             <label>Date Issued</label>
-                            <SemanticDatepicker onChange={onDateIssuedChanged} value={data && new Date(data.date_issued)}/>
+                            <SemanticDatepicker onChange={onDateIssuedChanged} value={dateIssued}/>
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Cheque Holder</label>
+                            <input placeholder='Cheque Holder goes here' onChange={onChequeHolderChanged} value={serialNumber}/>
                         </Form.Field>
                         <Form.Field>
                             <label>Cheque Serial Number</label>
@@ -166,10 +178,10 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
                         </Form.Field>
                         <Form.Field>
                             <label>Date Due</label>
-                            <SemanticDatepicker onChange={onDateDueChanged} value={data && new Date(data.date_due)}/>
+                            <SemanticDatepicker onChange={onDateDueChanged} value={dateDue}/>
                         </Form.Field>
                         <Form.Field>
-                            Status: <Dropdown button labeled placeholder='Status' value={data?.status} options={['Pending', 'Canceled', 'Cleared', 'Overdue'].map((status) => ({ key: status, text: status, value: status }))} onClick={onStatusChanged}  />
+                            Status: <Dropdown selection placeholder='Status' value={status} options={['Pending', 'Canceled', 'Cleared'].map((status) => ({ key: status, text: status, value: status }))} onChange={onStatusChanged}  />
                         </Form.Field>
                         <Form.Field>
                             <Button

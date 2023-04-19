@@ -1,6 +1,7 @@
 import * as api from './API';
 interface Cheque {
   date_issued: string,
+  cheque_holder_name: string,
   serial_no: string,
   amount: number,
   date_due: string,

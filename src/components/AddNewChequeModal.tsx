@@ -12,6 +12,7 @@ interface AddNewChequeModalProps {
 
 interface Cheque {
   date_issued: string,
+  cheque_holder_name: string,
   serial_no: string,
   amount: number,
   date_due: string,
@@ -21,6 +22,7 @@ interface Cheque {
 const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }): JSX.Element => {
 
     const [dateIssued, setDateIssued] = React.useState<Date | null>(null);
+    const [chequeHoldername, setChequeHoldername] = React.useState<string>('');
     const [serialNumber, setSerialNumber] = React.useState<string>('');
     const [amount, setAmount] = React.useState<string>('');
     const [dateDue, setDateDue] = React.useState<Date | null>(null);
@@ -45,6 +47,21 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
             return;
         }
 
+        if (!chequeHoldername) {
+            alert('Cheque holder name is required');
+            return;
+        } 
+
+        if (!serialNumber) {
+            alert('Serial number is required');
+            return;
+        }
+
+        if (!amount) {
+            alert('Amount is required');
+            return;
+        }
+
         if (!dateDue) {
             alert('Date due is required');
             return;
@@ -62,6 +79,7 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
 
         const values = {
             date_issued: dateIssued.toISOString().split("T")[0],
+            cheque_holder_name: chequeHoldername,
             serial_no: serialNumber,
             amount: parseFloat(amount),
             date_due: dateDue.toISOString().split("T")[0],
@@ -86,6 +104,7 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
           
           <AddNewChequeForm 
             setDateIssued={ setDateIssued }
+            setChequeHoldername={ setChequeHoldername }
             setDateDue={ setDateDue } 
             setSerialNumber={ setSerialNumber } 
             setAmount={ setAmount } 

@@ -16,7 +16,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false)
     const [openEditModal, setOpenEditModal] = React.useState(false)
     const [chequeId, setChequeId] = React.useState<number>(0);
-    const headerRow = ["Date Created", "Cheque Number", "Amount (GHC)", "Status", "Date Due", "Saved By", "Image", "Actions"];
+    const headerRow = ["Date Created", "Cheque Holder", "Cheque Number", "Amount (GHC)", "Status", "Date Due", "Saved By", "Image", "Actions"];
     const auth = useAuthHeader();
     const user = useAuthUser();
     const loggedInUser = user();
@@ -45,6 +45,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                 const status = d.status;
                 const amount = d.amount;
                 const chequeNumber = d.serial_no;
+                const chequeHolder = d.cheque_holder_name;
                 const image = d.img_url;
                 const id = d.id;
                 return { 
@@ -56,6 +57,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                     status, 
                     amount, 
                     chequeNumber, 
+                    chequeHolder,
                     img_url: image, 
                     id 
                 }
@@ -79,13 +81,37 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
         const dateDue = new Date(date);
         const diffTime = Math.abs(dateDue.getTime() - today.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays < 3;
+        return diffDays < 2;
     }
 
     const checkDateOverDue = (date: string) : boolean => {
         const today = new Date();
         const dateDue = new Date(date);
         return dateDue.getTime() < today.getTime();
+    }
+
+    const checkDDay = (date: string) : boolean => {
+        const today = new Date();
+        const dateDue = new Date(date);
+        const diffTime = Math.abs(dateDue.getTime() - today.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays === 0;
+    }
+
+    function getLabelColor(status: string, date: string) {
+        if (status.toLowerCase() === 'pending') {
+            if (checkDateOverDue(date)) return '#FF6647';
+            if (checkDDay(date)) return '#FC7676';
+            if (checkDate(date)) return '#ECB24C';
+        }
+        
+        return 'white';
+    }
+
+    function getStatus(status: string, date: string){
+        if (status.toLowerCase() === 'pending' && checkDateOverDue(date)) return 'Overdue';
+       
+        return status;
     }
 
     return (
@@ -105,17 +131,20 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             <Table.Body>
                 {
                     tableData.map((row: any, i: number) => (
-                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} negative={false}>
+                        <Table.Row key={i} style={
+                            {backgroundColor: (row.status != 'canceled' || row.status != 'cleared') && getLabelColor(row.status, row.actualDateDue)}
+                        }>
                             <Table.Cell>{row.dateCreatedString}</Table.Cell>
+                            <Table.Cell>{row.chequeHolder}</Table.Cell>
                             <Table.Cell>{row.chequeNumber}</Table.Cell>
                             <Table.Cell>{row.amount}</Table.Cell>
                             <Table.Cell>
                                 {
-                                (checkDate(row.actualDateDue) && 
+                                (checkDate(row.actualDateDue) && row.status.toLowerCase() === 'pending') && (
                                     <>
                                         <Icon name='attention' />   
                                     </>)}
-                                {row.status}
+                                { getStatus(row.status, row.actualDateDue) }
                             </Table.Cell>
                             <Table.Cell>{row.dateDueString}</Table.Cell>
                             <Table.Cell>{row.savedBy}</Table.Cell>
