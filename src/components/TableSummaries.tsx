@@ -45,6 +45,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                 const status = d.status;
                 const amount = d.amount;
                 const chequeNumber = d.serial_no;
+                const chequeHolder = d.cheque_holder_name;
                 const image = d.img_url;
                 const id = d.id;
                 return { 
@@ -56,6 +57,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                     status, 
                     amount, 
                     chequeNumber, 
+                    chequeHolder,
                     img_url: image, 
                     id 
                 }
@@ -96,12 +98,20 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
         return diffDays === 0;
     }
 
-    function getLabelColor(date: string) {
-        if (checkDateOverDue(date)) return 'red';
-        if (checkDDay(date)) return '#FC7676';
-        if (checkDate(date)) return '#ECB24C';
+    function getLabelColor(status: string, date: string) {
+        if (status.toLowerCase() === 'pending') {
+            if (checkDateOverDue(date)) return '#FF6647';
+            if (checkDDay(date)) return '#FC7676';
+            if (checkDate(date)) return '#ECB24C';
+        }
         
         return 'white';
+    }
+
+    function getStatus(status: string, date: string){
+        if (status.toLowerCase() === 'pending' && checkDateOverDue(date)) return 'Overdue';
+       
+        return status;
     }
 
     return (
@@ -122,19 +132,19 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                 {
                     tableData.map((row: any, i: number) => (
                         <Table.Row key={i} style={
-                            {backgroundColor: (row.status != 'canceled' || row.status != 'cleared') && getLabelColor(row.actualDateDue), color: 'white'}
+                            {backgroundColor: (row.status != 'canceled' || row.status != 'cleared') && getLabelColor(row.status, row.actualDateDue)}
                         }>
                             <Table.Cell>{row.dateCreatedString}</Table.Cell>
-                            <Table.Cell>{row.cheque_holder_namef}</Table.Cell>
+                            <Table.Cell>{row.chequeHolder}</Table.Cell>
                             <Table.Cell>{row.chequeNumber}</Table.Cell>
                             <Table.Cell>{row.amount}</Table.Cell>
                             <Table.Cell>
                                 {
-                                (checkDate(row.actualDateDue) && 
+                                (checkDate(row.actualDateDue) && row.status.toLowerCase() === 'pending') && (
                                     <>
                                         <Icon name='attention' />   
                                     </>)}
-                                {row.status}
+                                { getStatus(row.status, row.actualDateDue) }
                             </Table.Cell>
                             <Table.Cell>{row.dateDueString}</Table.Cell>
                             <Table.Cell>{row.savedBy}</Table.Cell>

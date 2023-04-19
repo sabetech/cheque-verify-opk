@@ -6,6 +6,7 @@ import { SemanticDatepickerProps } from 'react-semantic-ui-datepickers/dist/type
 
 interface AddNewChequeModalFormProps {
     setDateIssued: (date: Date) => void;
+    setChequeHoldername: (chequeHoldername: string) => void;
     setDateDue: (date: Date) => void;
     setSerialNumber: (serialNumber: string) => void;
     setAmount: (amount: string) => void;
@@ -13,12 +14,16 @@ interface AddNewChequeModalFormProps {
     imageName: string;
 }
 
-const AddNewChequeForm:React.FC<AddNewChequeModalFormProps> = ({ setDateIssued, setDateDue, setSerialNumber, setAmount, setImage, imageName }) => {
+const AddNewChequeForm:React.FC<AddNewChequeModalFormProps> = ({ setDateIssued, setChequeHoldername,  setDateDue, setSerialNumber, setAmount, setImage, imageName }) => {
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     
     const onDateIssuedChanged = (event: React.SyntheticEvent<Element, Event> | undefined, data: SemanticDatepickerProps) => {
         setDateIssued(data.value as Date);
+    }
+
+    const onChequeHolderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChequeHoldername(event.target.value);
     }
 
     const onDateDueChanged = (event: React.SyntheticEvent<Element, Event> | undefined, data: SemanticDatepickerProps) => {
@@ -44,6 +49,10 @@ const AddNewChequeForm:React.FC<AddNewChequeModalFormProps> = ({ setDateIssued, 
           <Form.Field>
             <label>Date Issued</label>
             <SemanticDatepicker onChange={onDateIssuedChanged} />
+          </Form.Field>
+          <Form.Field>
+            <label>Cheque Holder</label>
+            <input placeholder='Kwame Oya' onChange={onChequeHolderChange} />
           </Form.Field>
           <Form.Field>
             <label>Cheque Serial Number</label>

@@ -104,6 +104,7 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
           
           <AddNewChequeForm 
             setDateIssued={ setDateIssued }
+            setChequeHoldername={ setChequeHoldername }
             setDateDue={ setDateDue } 
             setSerialNumber={ setSerialNumber } 
             setAmount={ setAmount } 
