@@ -16,7 +16,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false)
     const [openEditModal, setOpenEditModal] = React.useState(false)
     const [chequeId, setChequeId] = React.useState<number>(0);
-    const headerRow = ["Date Created", "Cheque Number", "Amount (GHC)", "Status", "Date Due", "Saved By", "Image", "Actions"];
+    const headerRow = ["Date Created", "Cheque Holder", "Cheque Number", "Amount (GHC)", "Status", "Date Due", "Saved By", "Image", "Actions"];
     const auth = useAuthHeader();
     const user = useAuthUser();
     const loggedInUser = user();
@@ -79,13 +79,29 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
         const dateDue = new Date(date);
         const diffTime = Math.abs(dateDue.getTime() - today.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays < 3;
+        return diffDays < 2;
     }
 
     const checkDateOverDue = (date: string) : boolean => {
         const today = new Date();
         const dateDue = new Date(date);
         return dateDue.getTime() < today.getTime();
+    }
+
+    const checkDDay = (date: string) : boolean => {
+        const today = new Date();
+        const dateDue = new Date(date);
+        const diffTime = Math.abs(dateDue.getTime() - today.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays === 0;
+    }
+
+    function getLabelColor(date: string) {
+        if (checkDateOverDue(date)) return 'red';
+        if (checkDDay(date)) return '#FC7676';
+        if (checkDate(date)) return '#ECB24C';
+        
+        return 'white';
     }
 
     return (
@@ -105,8 +121,11 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             <Table.Body>
                 {
                     tableData.map((row: any, i: number) => (
-                        <Table.Row key={i} warning={checkDate(row.actualDateDue)} negative={false}>
+                        <Table.Row key={i} style={
+                            {backgroundColor: (row.status != 'canceled' || row.status != 'cleared') && getLabelColor(row.actualDateDue), color: 'white'}
+                        }>
                             <Table.Cell>{row.dateCreatedString}</Table.Cell>
+                            <Table.Cell>{row.cheque_holder_namef}</Table.Cell>
                             <Table.Cell>{row.chequeNumber}</Table.Cell>
                             <Table.Cell>{row.amount}</Table.Cell>
                             <Table.Cell>
