@@ -2,8 +2,8 @@ import axios from "axios";
 //create a post request with the data from the cheque object using fetch
 //create base url from environment variable base url
 
-const BASE_URL = import.meta.env.VITE_API_URL;
-const SERVER_URL = import.meta.env.VITE_SERVER_URL
+const BASE_URL = "https://cheque-mgt.fly.dev/api";
+const SERVER_URL = "https://cheque-mgt.fly.dev";
 
 const post = (url: string, data: any, headers: object) => {
  const formData = new FormData();
