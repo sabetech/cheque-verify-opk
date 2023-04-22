@@ -164,7 +164,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
                         </Form.Field>
                         <Form.Field>
                             <label>Cheque Holder</label>
-                            <input placeholder='Cheque Holder goes here' onChange={onChequeHolderChanged} value={serialNumber}/>
+                            <input placeholder='Cheque Holder goes here' onChange={onChequeHolderChanged} value={chequeHolder}/>
                         </Form.Field>
                         <Form.Field>
                             <label>Cheque Serial Number</label>
@@ -200,7 +200,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
                                 accept="image/*"
                             />
                             <Image 
-                                src={`http://localhost:8000/storage/cheques/${data?.img_url?.substring(data?.img_url.lastIndexOf("/"))}`} 
+                                src={data?.img_url} 
                                 width={'150px'}
                             />
                         </Form.Field>
