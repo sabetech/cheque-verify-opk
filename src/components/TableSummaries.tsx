@@ -99,17 +99,17 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     }
 
     function getLabelColor(status: string, date: string) {
-        if (status.toLowerCase() === 'pending') {
+        
+        if (status.toString().toLowerCase() === 'pending') {
             if (checkDateOverDue(date)) return '#FF6647';
             if (checkDDay(date)) return '#FC7676';
             if (checkDate(date)) return '#ECB24C';
         }
-        
         return 'white';
     }
 
     function getStatus(status: string, date: string){
-        if (status.toLowerCase() === 'pending' && checkDateOverDue(date)) return 'Overdue';
+        if (status.toString().toLowerCase() === 'pending' && checkDateOverDue(date)) return 'Overdue';
        
         return status;
     }
@@ -130,7 +130,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             </Table.Header>
             <Table.Body>
                 {
-                    tableData.map((row: any, i: number) => (
+                    tableData && tableData.map((row: any, i: number) => (
                         <Table.Row key={i} style={
                             {backgroundColor: (row.status != 'canceled' || row.status != 'cleared') && getLabelColor(row.status, row.actualDateDue)}
                         }>

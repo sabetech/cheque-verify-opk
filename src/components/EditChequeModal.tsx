@@ -43,6 +43,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
       
         mutationFn: (values: Cheque) => editCheque(chequeId, values, auth()),
         onSuccess: newCheque => {
+            
           queryClient.invalidateQueries('cheques');
           queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? [...oldCheques, newCheque] : []);
           setOpen(false);
