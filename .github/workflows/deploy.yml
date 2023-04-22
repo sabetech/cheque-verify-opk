@@ -6,6 +6,10 @@ on:
   push:
     branches: ['main']
 
+env:
+  VITE_API_URL: 'https://cheque-mgt.fly.dev/api'
+  VITE_SERVER_URL: 'https://cheque-mgt.fly.dev/'
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
