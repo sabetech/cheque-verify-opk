@@ -1,9 +1,6 @@
 import React, {useEffect} from 'react'
 import { Image, List, Button, Icon } from 'semantic-ui-react'
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { getUsers } from '../services/UserApi';
-import { editUser } from '../services/UserApi';
-import { useAuthHeader } from 'react-auth-kit';
+import { useAuthUser } from 'react-auth-kit';
 
 interface UserListProps {
   showAddNewUserModal: (open: boolean) => void;
@@ -22,6 +19,9 @@ interface User {
 }
 
 const UserList: React.FC<UserListProps> = ({ showAddNewUserModal, users, setUserId }) => {
+  const auth = useAuthUser();
+  
+  const currentUser = auth();
 
   const onUserRemove = (id: number) => {
    
@@ -41,7 +41,10 @@ return (
         return (
           <List.Item key={user.id} >
             <List.Content floated='right'>
-              <Button basic color='red' onClick={() => onUserRemove(user.id)} size={"tiny"}>X</Button>
+              {
+                currentUser?.user.email !== user.email &&
+                <Button basic color='red' onClick={() => onUserRemove(user.id)} size={"tiny"}>X</Button>
+              }
             </List.Content>
             <Image avatar src='https://www.shareicon.net/download/128x128//2017/02/15/878685_user_512x512.png' />
             <List.Content onClick={() => onEditUser(user.id)}><strong>{ user.name } </strong><em>({user.roles.length > 0 ? user.roles[0].name : "No Assigned Role"})</em></List.Content>

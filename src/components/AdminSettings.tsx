@@ -41,7 +41,7 @@ const AdminSettings: React.FC = () => {
         },
         
         onSuccess: newUser => {
-          queryClient.invalidateQueries('users');
+          queryClient.invalidateQueries({ queryKey: ['users'] });
           queryClient.setQueryData(['users'], (oldUsers: any) => oldUsers ? [...oldUsers, newUser] : []);
           setOpen(false);
         }
