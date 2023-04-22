@@ -223,4 +223,4 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
     );
 }
 
-export default EditChequeModal
+export default EditChequeModal;

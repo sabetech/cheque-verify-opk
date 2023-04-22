@@ -44,6 +44,7 @@ const AdminSettings: React.FC = () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
           queryClient.setQueryData(['users'], (oldUsers: any) => oldUsers ? [...oldUsers, newUser] : []);
           setOpen(false);
+          location.reload();
         }
     });
     useEffect(() => {

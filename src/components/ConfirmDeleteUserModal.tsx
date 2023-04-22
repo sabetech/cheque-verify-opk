@@ -14,12 +14,13 @@ const ConfirmDeleteUserModal: React.FC<ConfirmDeleteModalUserProps> = ({open, se
     const queryClient = useQueryClient();
     const auth = useAuthHeader();
 
-    const { status, error, mutate} = useMutation({
+    const { mutate} = useMutation({
         mutationFn: (id: number) => deleteUser(id, auth()),
         onSuccess: () => {
           queryClient.invalidateQueries('users');
           queryClient.setQueryData(['users'], (oldUsers: any) => oldUsers ? oldUsers?.data?.filter((c: any) => c.id !== userId) : []);
           setOpen(false);
+          // location.reload(); ///WRONG WRONG WRONG!!!!
         }
     });
 
