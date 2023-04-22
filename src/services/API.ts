@@ -4,6 +4,9 @@ import axios from "axios";
 
 const BASE_URL = "https://cheque-mgt.fly.dev/api";
 const SERVER_URL = "https://cheque-mgt.fly.dev";
+// const BASE_URL = "http://localhost:8000/api";
+// const SERVER_URL = "http://localhost:8000";
+
 
 const post = (url: string, data: any, headers: object) => {
  const formData = new FormData();

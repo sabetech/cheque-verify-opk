@@ -41,10 +41,6 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ SubPage }) => {
                 <Icon name='cog' />
                 Admin Settings
               </Menu.Item> 
-              <Menu.Item as='a' >
-              <Icon name='download' />
-              Check for Updates
-            </Menu.Item> 
             </>
             )
           }
