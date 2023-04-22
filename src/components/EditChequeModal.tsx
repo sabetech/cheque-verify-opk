@@ -39,7 +39,7 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
     const queryClient = useQueryClient();
     
     const { data } = useQuery<Cheque>({queryKey: ['cheques', chequeId], queryFn: () => getChequeById(chequeId, auth())})
-    const { mutate } = useMutation({
+    const { mutate, isLoading } = useMutation({
       
         mutationFn: (values: Cheque) => editCheque(chequeId, values, auth()),
         onSuccess: newCheque => {
@@ -213,15 +213,14 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
                     Cancel
                 </Button>
                 <Button
-                    content="Save"
-                    labelPosition='right'
-                    icon='checkmark'
+                    loading={isLoading}
                     positive
-                    onClick={() => onSubmit()}
-                />
+                    onClick={() => onSubmit()}>
+                Save
+                </Button>
             </Modal.Actions>
         </Modal>
-    )
+    );
 }
 
 export default EditChequeModal
