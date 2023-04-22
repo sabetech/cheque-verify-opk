@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
 import { Image, List, Button, Icon } from 'semantic-ui-react'
 import { useAuthUser } from 'react-auth-kit';
+import ConfirmDeleteUserModal from './ConfirmDeleteUserModal';
 
 interface UserListProps {
   showAddNewUserModal: (open: boolean) => void;
@@ -19,13 +20,16 @@ interface User {
 }
 
 const UserList: React.FC<UserListProps> = ({ showAddNewUserModal, users, setUserId }) => {
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [userId, setAboutToDeleteUser] = React.useState<number>(0);
   const auth = useAuthUser();
   
   const currentUser = auth();
 
   const onUserRemove = (id: number) => {
-   
-
+    console.log(id);
+    setAboutToDeleteUser(id);
+    setOpen(true);
   }
 
   const onEditUser = (id: number) => {
@@ -35,6 +39,7 @@ const UserList: React.FC<UserListProps> = ({ showAddNewUserModal, users, setUser
 
 
 return (
+  <>
   <List animated selection verticalAlign='middle'>
     {
       users?.map((user: User) => {
@@ -53,6 +58,8 @@ return (
       })
     }
   </List>
+  <ConfirmDeleteUserModal open={open} setOpen={setOpen} userId={userId} />
+  </>
   );
 }
 

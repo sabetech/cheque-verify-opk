@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Header, Image, Modal } from 'semantic-ui-react'
+import { Button, Header, Image, Loader, Modal } from 'semantic-ui-react'
 import chequeImage from '../assets/cheque-new.png'
 import AddNewChequeForm from './AddNewChequeForm';
 import { useMutation, useQueryClient } from 'react-query';
@@ -30,7 +30,7 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
     const queryClient = useQueryClient();
     const auth = useAuthHeader();
 
-    const { mutate } = useMutation({
+    const { mutate, isLoading } = useMutation({
       
         mutationFn: (values: Cheque) => addNewCheque(values, auth()),
         onSuccess: newCheque => {
@@ -122,12 +122,10 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
           Cancel
         </Button>
         <Button
-          content="Submit"
-          labelPosition='right'
-          icon='checkmark'
+          loading={isLoading}
           positive
           onClick={onSubmit}
-        />
+        >Submit</Button>
       </Modal.Actions>
     </Modal>
   )

@@ -6,7 +6,7 @@ import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import { Icon } from 'semantic-ui-react'
 import EditChequeModal from './EditChequeModal';
-import { SERVER_URL } from '../services/API';
+import ImageModal from './ImageModal';
 
 interface TableSummariesProps {
     dateFilter: Date[];
@@ -21,6 +21,8 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
     const user = useAuthUser();
     const loggedInUser = user();
     const [tableData, setTableData] = React.useState<any>([]);
+    const [selectedImage, setSelectedImage] = React.useState<string>('');
+    const [openImageModal, setOpenImageModal] = React.useState(false);
 
     const { data } = useQuery(['cheques'], () => getCheques(auth()));
 
@@ -114,6 +116,11 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
         return status;
     }
 
+    const onImageClick = (url: string) => {
+        setSelectedImage(url);
+        setOpenImageModal(true);
+    }
+
     return (
         <Table
             celled
@@ -150,8 +157,10 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                             <Table.Cell>{row.savedBy}</Table.Cell>
                             <Table.Cell>
                                 <Image 
-                                src={`${SERVER_URL}/storage/cheques/${row.img_url?.substring(row?.img_url.lastIndexOf("/") + 1)}`} 
+                                src={row.img_url} 
                                 width={'100px'}
+                                style={{cursor: 'pointer'}}
+                                onClick={() => onImageClick(row.img_url)}
                                 /></Table.Cell>
                             <Table.Cell> 
                                 {
@@ -168,6 +177,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             </Table.Body>
             <ConfirmDeleteModal open={openDeleteModal} setOpen={setOpenDeleteModal} chequeId={chequeId} />
             {chequeId > 0 && <EditChequeModal open={openEditModal} setOpen={setOpenEditModal} chequeId={chequeId} />}
+            <ImageModal image={ selectedImage } isOpen={openImageModal} setOpen={setOpenImageModal} />
         </Table>
     );
 }
