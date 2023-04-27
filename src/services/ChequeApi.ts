@@ -30,6 +30,10 @@ export function editCheque(chequeId: Number, cheque: Cheque, token: string) : Pr
   return api.put('/cheques/'+chequeId, cheque, {'Authorization': token});
 }
 
+export function getChequeDashboardValues (token: string) : Promise<any> {
+  return api.get('/cheques/dashboard', {'Authorization': token}).then(response => response.data.data);
+}
+
 export function logout(token: string) {
   return api.post('/logout', {}, {'Authorization': token});
 }

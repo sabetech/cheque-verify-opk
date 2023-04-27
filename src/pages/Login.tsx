@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useSignIn } from 'react-auth-kit';
 import { Button, Form, Message, Icon, Grid, Header, Input, Segment } from 'semantic-ui-react'
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 const LoginForm = (props: any) => {
   const BASE_URL = import.meta.env.VITE_API_URL;
   const [error, setError] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const signIn = useSignIn();
 
@@ -18,6 +19,7 @@ const LoginForm = (props: any) => {
       password: password
     }
     
+    setLoading(true)
     try {
       const response = await axios(`${BASE_URL}/login`, {
         method: "POST",
@@ -28,10 +30,13 @@ const LoginForm = (props: any) => {
       });
       
       const data = await response.data;
-      console.log("Data:::", data);
+      
       if (response.status !== 201) {
         setError("A login error occured. Please try again");
       } else {
+        
+        setLoading(false);
+        
         const success = signIn({
           token: data.token,
           expiresIn: 3600,
@@ -45,7 +50,7 @@ const LoginForm = (props: any) => {
           }
          }
         )
-        console.log("Success:::", success);
+        
         if (success) {
           window.location.replace('/');
         }
@@ -75,9 +80,9 @@ const LoginForm = (props: any) => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <Button color='teal' fluid size='large' onClick={onSubmit}>
+            {!loading &&  <Button color='teal' fluid size='large' onClick={onSubmit}>
               Login
-            </Button>
+            </Button> || <Button color='teal' fluid size='large' loading />}
             {
               error && <Message attached='bottom' negative>
                         <Icon name='help' />

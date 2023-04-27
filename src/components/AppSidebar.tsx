@@ -31,8 +31,12 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ SubPage }) => {
           width='thin'
         >
           <Menu.Item as='a' onClick={() => navigate('/')}>
-            <Icon name='home' />
+            <Icon name='th' />
             Dashboard
+          </Menu.Item>
+          <Menu.Item as='a' onClick={() => navigate('/cheques')}>
+            <Icon name='money bill alternate' />
+            Cheques
           </Menu.Item>
           {
             loggedInUser?.user.role == 'admin' && 
