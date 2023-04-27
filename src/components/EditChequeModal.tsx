@@ -163,6 +163,10 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
                             <SemanticDatepicker onChange={onDateIssuedChanged} value={dateIssued}/>
                         </Form.Field>
                         <Form.Field>
+                            <label>Date Due</label>
+                            <SemanticDatepicker onChange={onDateDueChanged} value={dateDue}/>
+                        </Form.Field>
+                        <Form.Field>
                             <label>Cheque Holder</label>
                             <input placeholder='Cheque Holder goes here' onChange={onChequeHolderChanged} value={chequeHolder}/>
                         </Form.Field>
@@ -176,10 +180,6 @@ const EditChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, cheq
                                 <Label basic>GHC</Label>
                                 <input placeholder='Amount' onChange={onAmountChanged} value={amount} />
                             </Input>
-                        </Form.Field>
-                        <Form.Field>
-                            <label>Date Due</label>
-                            <SemanticDatepicker onChange={onDateDueChanged} value={dateDue}/>
                         </Form.Field>
                         <Form.Field>
                             Status: <Dropdown selection placeholder='Status' value={status} options={['Pending', 'Canceled', 'Cleared'].map((status) => ({ key: status, text: status, value: status }))} onChange={onStatusChanged}  />

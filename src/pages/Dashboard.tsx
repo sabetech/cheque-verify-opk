@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import { Header, Button, Icon, Loader } from "semantic-ui-react";
 import SemanticDatepicker from "react-semantic-ui-datepickers";
 import { useQuery } from 'react-query';

@@ -10,7 +10,7 @@ const ImageModal:React.FC<ImageModalProps> = ({ image, isOpen, setOpen }) => {
     return (
         <Modal basic closeIcon open={ isOpen } onClose={() => setOpen(false)}>
             <Modal.Content>
-                <Image centered size={"medium"} src={image} />
+                <Image centered size={"large"} src={image} />
             </Modal.Content>
         </Modal>
     );

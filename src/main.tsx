@@ -12,6 +12,7 @@ import { Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools'
 import Dashboard from './pages/Dashboard';
+import Summaries from './pages/Summaries';
 import AdminSettings from './components/AdminSettings';
 
 const queryClient = new QueryClient()
@@ -29,6 +30,10 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ Component }) => {
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <PrivateRoute Component={ Summaries } />,
+  },
+  {
+    path: "/cheques",
     element: <PrivateRoute Component={ Dashboard } />,
   },
   {
