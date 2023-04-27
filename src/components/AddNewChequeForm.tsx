@@ -51,6 +51,10 @@ const AddNewChequeForm:React.FC<AddNewChequeModalFormProps> = ({ setDateIssued, 
             <SemanticDatepicker onChange={onDateIssuedChanged} />
           </Form.Field>
           <Form.Field>
+            <label>Date Due</label>
+            <SemanticDatepicker onChange={onDateDueChanged}/>
+          </Form.Field>
+          <Form.Field>
             <label>Cheque Holder</label>
             <input placeholder='Kwame Oya' onChange={onChequeHolderChange} />
           </Form.Field>
@@ -62,10 +66,7 @@ const AddNewChequeForm:React.FC<AddNewChequeModalFormProps> = ({ setDateIssued, 
             <label>Amount</label>
             <input placeholder='Amount' onChange={onAmountChanged} />
           </Form.Field>
-          <Form.Field>
-            <label>Date Due</label>
-            <SemanticDatepicker onChange={onDateDueChanged}/>
-          </Form.Field>
+          
           <Form.Field>
               <Button
                   content={  "Choose File"}
