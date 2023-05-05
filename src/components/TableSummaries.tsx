@@ -10,9 +10,10 @@ import ImageModal from './ImageModal';
 
 interface TableSummariesProps {
     dateFilter: Date[];
+    nameFilter: string;
 }
 
-const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
+const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter, nameFilter }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false)
     const [openEditModal, setOpenEditModal] = React.useState(false)
     const [chequeId, setChequeId] = React.useState<number>(0);
@@ -33,8 +34,11 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
                 if (dateFilter == null) return true;
                 if (dateFilter.length === 0) return true;
                 
-                return new Date(item.date_due).getTime() >= dateFilter[0].getTime() && 
-                    new Date(item.date_due).getTime() <= dateFilter[1].getTime();
+                return (new Date(item.date_due).getTime() >= dateFilter[0].getTime() && 
+                    new Date(item.date_due).getTime() <= dateFilter[1].getTime())
+            })
+            ?.filter((filtered: any) => {
+                return filtered.cheque_holder_name.toLowerCase().includes(nameFilter.toLocaleLowerCase());
             })
             ?.sort((a:any, b:any) => 
             new Date(a.date_due).getTime() - new Date(b.date_due).getTime())
@@ -66,7 +70,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter }) => {
             });
             setTableData(newData);
         }
-    }, [data, dateFilter]);
+    }, [data, dateFilter, nameFilter]);
 
     const onDelete = (id: number) => {
         setOpenDeleteModal(true);
