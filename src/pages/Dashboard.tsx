@@ -1,5 +1,5 @@
-import {SyntheticEvent, useState} from "react";
-import { Header, Button, Icon, Loader, Input } from "semantic-ui-react";
+import {useEffect, useState} from "react";
+import { Header, Button, Icon, Loader, Input, Message } from "semantic-ui-react";
 import SemanticDatepicker from "react-semantic-ui-datepickers";
 import { useQuery } from 'react-query';
 import { useAuthHeader } from 'react-auth-kit'; 
@@ -8,6 +8,11 @@ import { getCheques } from "../services/ChequeApi";
 import AddNewChequeModal from "../components/AddNewChequeModal";
 import { debounce } from 'lodash';
 
+interface Data {
+  message: string,
+  success: boolean
+}
+
 const Dashboard = () => {
     const auth = useAuthHeader();
     const { isLoading } = useQuery(['cheques'], () => getCheques(auth()));
@@ -15,11 +20,25 @@ const Dashboard = () => {
     const [open, setOpen] = useState<boolean>(false)
     const [dateFilter, setDateFilter] = useState<Date[]>([]);
     const [nameFilter, setNameFilter] = useState<string>("");
+    const [showMessage, setShowMessage] = useState<boolean>(false)
+    const [response, setResponse] = useState<Data | null>(null);
+
+    useEffect(() => {
+
+      if (response) {
+        setShowMessage(true)
+        setTimeout(() => {  
+          setShowMessage(false)
+          setResponse(null)
+        }, 6000)
+      }
+
+    }, [response]);
 
     const showAddNewChequeModal = () => {
       setOpen((prev) => !prev);
     }
-
+    
     const onDateRangeChange = (event: any, data: any) => {
         if (!data.value) {
           setDateFilter([]);
@@ -49,8 +68,19 @@ const Dashboard = () => {
               <Input loading={loading} icon='user' placeholder='Search...' style={{marginLeft: 20}} onChange={searchChequeHolder}/>
             </div>
             <Header as='h3' style={{alignSelf: 'flex-start'}}>Dashboard Summary { isLoading && <Loader active inline /> } </Header>
+            
+            { 
+            showMessage &&
+              <Message size='big' style={{width: '90%'}} color={ response?.success ? "olive":"red" }  >
+                <Message.Header>Notification</Message.Header>
+                <p>
+                  { response?.message }
+                </p>
+              </Message>
+            }
             <TableSummaries dateFilter={dateFilter} nameFilter={nameFilter}/>
-            <AddNewChequeModal setOpen={setOpen} open={open}/>
+            <AddNewChequeModal setOpen={setOpen} open={open} setResponse={setResponse}/>
+          
         </>
     );
 }

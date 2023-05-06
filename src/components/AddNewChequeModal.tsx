@@ -5,9 +5,16 @@ import AddNewChequeForm from './AddNewChequeForm';
 import { useMutation, useQueryClient } from 'react-query';
 import { addNewCheque } from '../services/ChequeApi';
 import { useAuthHeader } from 'react-auth-kit';
+
+interface Data {
+  message: string,
+  success: boolean
+}
+
 interface AddNewChequeModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
+    setResponse: (data: Data) => void;
 }
 
 interface Cheque {
@@ -19,7 +26,7 @@ interface Cheque {
   image: File
 }
 
-const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }): JSX.Element => {
+const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen, setResponse }): JSX.Element => {
 
     const [dateIssued, setDateIssued] = React.useState<Date | null>(null);
     const [chequeHoldername, setChequeHoldername] = React.useState<string>('');
@@ -38,6 +45,9 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
           queryClient.setQueryData(['cheques'], (oldCheques: any) => oldCheques ? [...oldCheques, newCheque] : []);
           setOpen(false);
           setImage(null);
+
+          setResponse(newCheque.data)
+
         }
     });
 
@@ -128,6 +138,7 @@ const AddNewChequeModal: React.FC<AddNewChequeModalProps> = ({ open, setOpen }):
         >Submit</Button>
       </Modal.Actions>
     </Modal>
+    
   )
 }
 

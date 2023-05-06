@@ -38,7 +38,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter, nameFilter 
                     new Date(item.date_due).getTime() <= dateFilter[1].getTime())
             })
             ?.filter((filtered: any) => {
-                return filtered.cheque_holder_name.toLowerCase().includes(nameFilter.toLocaleLowerCase());
+                return filtered.cheque_holder_name?.toLowerCase().includes(nameFilter?.toLocaleLowerCase());
             })
             ?.sort((a:any, b:any) => 
             new Date(a.date_due).getTime() - new Date(b.date_due).getTime())

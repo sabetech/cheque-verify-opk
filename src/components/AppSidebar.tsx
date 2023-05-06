@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Header,Icon, Menu, Segment, Sidebar, Grid } from 'semantic-ui-react'
+import { Icon, Menu, Segment, Sidebar } from 'semantic-ui-react'
 import AddNewChequeModal from './AddNewChequeModal';
 import TopBar from './TopBar'
 import { useAuthUser } from 'react-auth-kit';
@@ -20,7 +20,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ SubPage }) => {
     }
 
     return (
-      <Sidebar.Pushable as={Segment} style={{height: '100vh' }}>
+      <Sidebar.Pushable as={Segment} >
         <Sidebar
           as={Menu}
           animation='push'
@@ -28,7 +28,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ SubPage }) => {
           inverted
           vertical
           visible
-          width='thin'
+          width='thin' 
         >
           <Menu.Item as='a' onClick={() => navigate('/')}>
             <Icon name='th' />
@@ -49,7 +49,6 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ SubPage }) => {
             )
           }
         </Sidebar>
-        <AddNewChequeModal open={open} setOpen={setOpen}/>
         <Sidebar.Pusher>
           <Segment basic>
           <TopBar />
