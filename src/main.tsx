@@ -54,7 +54,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         authName={"_auth"}
         cookieDomain={window.location.hostname}
         cookieSecure={false}
-        >
+      >
         <RouterProvider router={router} />
       </AuthProvider>
     </QueryClientProvider>

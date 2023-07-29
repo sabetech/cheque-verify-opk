@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState } from "react";
 import { Header, Button, Icon, Loader, Input, Message } from "semantic-ui-react";
 import SemanticDatepicker from "react-semantic-ui-datepickers";
 import { useQuery } from 'react-query';
@@ -60,6 +60,20 @@ const Dashboard = () => {
         search(e.target.value)
       }
 
+      const print = () => {
+
+        console.log(tableRef.current);
+        const tableToPrint = document.getElementById("table-to-print");
+        
+        if (tableToPrint) {
+          const newWin = window.open("", "", "height=1000,width=1000");
+          newWin?.document.write(tableToPrint.outerHTML);
+          newWin?.print();
+          // newWin?.close();
+        }
+        
+      }
+
     return (
         <>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'baseline' }}>
@@ -68,7 +82,7 @@ const Dashboard = () => {
               <Input loading={loading} icon='user' placeholder='Search...' style={{marginLeft: 20}} onChange={searchChequeHolder}/>
             </div>
             <Header as='h3' style={{alignSelf: 'flex-start'}}>Dashboard Summary { isLoading && <Loader active inline /> } </Header>
-            
+            <Button size='big' onClick={print}>Print</Button>
             { 
             showMessage &&
               <Message size='big' style={{width: '90%'}} color={ response?.success ? "olive":"red" }  >
@@ -78,9 +92,9 @@ const Dashboard = () => {
                 </p>
               </Message>
             }
-            <TableSummaries dateFilter={dateFilter} nameFilter={nameFilter}/>
-            <AddNewChequeModal setOpen={setOpen} open={open} setResponse={setResponse}/>
-          
+            <TableSummaries dateFilter={dateFilter} nameFilter={nameFilter} />
+
+            <AddNewChequeModal setOpen={setOpen} open={open} setResponse={setResponse} />
         </>
     );
 }

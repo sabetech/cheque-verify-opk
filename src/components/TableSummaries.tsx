@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Table, Image, Label } from 'semantic-ui-react';
+import { Button, Table, Image, Label, TableProps } from 'semantic-ui-react';
 import { useQuery } from 'react-query';
 import { getCheques } from '../services/ChequeApi';
 import { useAuthHeader, useAuthUser } from 'react-auth-kit';
@@ -13,7 +13,7 @@ interface TableSummariesProps {
     nameFilter: string;
 }
 
-const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter, nameFilter }) => {
+const TableSummaries: React.FC<TableSummariesProps> = ( ( { dateFilter, nameFilter }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false)
     const [openEditModal, setOpenEditModal] = React.useState(false)
     const [chequeId, setChequeId] = React.useState<number>(0);
@@ -129,6 +129,7 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter, nameFilter 
         <Table
             celled
             style={{width: '90%'}}
+            id="table-to-print"
         >
             <Table.Header>
                 <Table.Row>
@@ -184,6 +185,6 @@ const TableSummaries: React.FC<TableSummariesProps> = ({ dateFilter, nameFilter 
             <ImageModal image={ selectedImage } isOpen={openImageModal} setOpen={setOpenImageModal} />
         </Table>
     );
-}
+});
 
 export default TableSummaries;
