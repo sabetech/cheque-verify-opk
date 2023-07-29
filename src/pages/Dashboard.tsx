@@ -62,7 +62,6 @@ const Dashboard = () => {
 
       const print = () => {
 
-        console.log(tableRef.current);
         const tableToPrint = document.getElementById("table-to-print");
         
         if (tableToPrint) {
